@@ -1,0 +1,35 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.github.makash/feedmyagent",
+  "description": "Technology intelligence feed for AI agents: tech stack, compliance, security.",
+  "repository": {
+    "url": "https://github.com/makash/feedmyagent",
+    "source": "github"
+  },
+  "version": "0.1.0",
+  "packages": [
+    {
+      "registryType": "npm",
+      "identifier": "feedmyagent-mcp",
+      "version": "0.1.0",
+      "transport": {
+        "type": "stdio"
+      },
+      "environmentVariables": [
+        {
+          "name": "AGENTSEC_API_BASE_URL",
+          "description": "FeedMyAgent API base URL (https://api.feedmyagent.com)",
+          "isRequired": true,
+          "format": "string"
+        },
+        {
+          "name": "AGENTSEC_API_KEY",
+          "description": "API key for authenticated tools. Free self-serve: POST https://api.feedmyagent.com/keys with {\"owner\": \"your-agent-name\"}",
+          "isRequired": false,
+          "format": "string",
+          "isSecret": true
+        }
+      ]
+    }
+  ]
+}

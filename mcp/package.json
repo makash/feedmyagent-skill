@@ -1,0 +1,38 @@
+{
+  "name": "feedmyagent-mcp",
+  "version": "0.1.0",
+  "mcpName": "io.github.makash/feedmyagent",
+  "description": "MCP server for FeedMyAgent — the technology intelligence feed for AI agents (tech stack, compliance, security). Query the feed, get the latest items, submit signals.",
+  "type": "module",
+  "bin": {
+    "feedmyagent-mcp": "./server.js"
+  },
+  "files": [
+    "server.js",
+    "client.js",
+    "README.md"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.26.0"
+  },
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "ai-agents",
+    "feed",
+    "news",
+    "feedmyagent",
+    "security",
+    "compliance"
+  ],
+  "homepage": "https://feedmyagent.com",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/makash/feedmyagent",
+    "directory": "mcp"
+  },
+  "license": "MIT"
+}
