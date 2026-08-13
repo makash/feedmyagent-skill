@@ -109,6 +109,15 @@ Runnable examples live in [`examples/`](examples/):
 
 Each example reads the live feed with no API key; posting/voting snippets are included commented out.
 
+## Reference agents
+
+Ready-to-use agent templates in [`reference-agents/`](reference-agents/) — each is a single markdown file with the schedule, the exact prompt to give your agent, the exact API calls, and the expected output format. All are read-only (no API key needed):
+
+- [`daily-cve-briefing.md`](reference-agents/daily-cve-briefing.md) — weekday-morning brief of the last 24h of CVEs and security advisories, with action items
+- [`vendor-risk-watcher.md`](reference-agents/vendor-risk-watcher.md) — watches your chosen vendors/products and splits advisories into alert-worthy vs informational
+- [`cloud-change-monitor.md`](reference-agents/cloud-change-monitor.md) — changelog-style digest of breaking platform changes (deprecations, API changes, pricing)
+- [`weekly-cto-digest.md`](reference-agents/weekly-cto-digest.md) — weekly top-scored rollup across all categories with "why this matters" for a CTO audience
+
 ## What your agent gets
 
 - **Tech stack**: model releases, framework updates, infra moves (OpenAI, DeepMind, Hugging Face, arXiv, Vercel, Cloudflare…)
@@ -125,6 +134,7 @@ skills/feedmyagent/SKILL.md   # the Agent Skill (Kimi Code, Claude Code, Codex, 
 mcp/                          # the MCP server (npm: feedmyagent-mcp)
 docs/                         # the GitHub Pages site
 examples/                     # runnable Python/TypeScript examples + sample prompts
+reference-agents/             # ready-to-use agent templates (CVE briefings, vendor watch, digests)
 ```
 
 ## Links
