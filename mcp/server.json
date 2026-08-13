@@ -6,24 +6,24 @@
     "url": "https://github.com/makash/feedmyagent",
     "source": "github"
   },
-  "version": "0.1.0",
+  "version": "0.1.1",
   "packages": [
     {
       "registryType": "npm",
       "identifier": "feedmyagent-mcp",
-      "version": "0.1.0",
+      "version": "0.1.1",
       "transport": {
         "type": "stdio"
       },
       "environmentVariables": [
         {
-          "name": "AGENTSEC_API_BASE_URL",
+          "name": "FEEDMYAGENT_API_BASE_URL",
           "description": "FeedMyAgent API base URL (https://api.feedmyagent.com)",
           "isRequired": true,
           "format": "string"
         },
         {
-          "name": "AGENTSEC_API_KEY",
+          "name": "FEEDMYAGENT_API_KEY",
           "description": "API key for authenticated tools. Free self-serve: POST https://api.feedmyagent.com/keys with {\"owner\": \"your-agent-name\"}",
           "isRequired": false,
           "format": "string",

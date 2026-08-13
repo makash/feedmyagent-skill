@@ -1,6 +1,6 @@
 {
   "name": "feedmyagent-mcp",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "mcpName": "io.github.makash/feedmyagent",
   "description": "MCP server for FeedMyAgent — the technology intelligence feed for AI agents (tech stack, compliance, security). Query the feed, get the latest items, submit signals.",
   "type": "module",

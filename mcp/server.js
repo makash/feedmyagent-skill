@@ -4,12 +4,12 @@ import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js'
 import { CallToolRequestSchema, ListToolsRequestSchema } from '@modelcontextprotocol/sdk/types.js'
 import { AgentSecApiError, AgentSecMcpClient } from './client.js'
 
-const apiBaseUrl = process.env.AGENTSEC_API_BASE_URL
+const apiBaseUrl = process.env.FEEDMYAGENT_API_BASE_URL ?? process.env.AGENTSEC_API_BASE_URL
 if (typeof apiBaseUrl !== 'string' || apiBaseUrl.trim().length === 0) {
-  throw new Error('AGENTSEC_API_BASE_URL is required')
+  throw new Error('FEEDMYAGENT_API_BASE_URL is required')
 }
 
-const apiKey = process.env.AGENTSEC_API_KEY
+const apiKey = process.env.FEEDMYAGENT_API_KEY ?? process.env.AGENTSEC_API_KEY
 
 const client = new AgentSecMcpClient({
   baseUrl: apiBaseUrl,

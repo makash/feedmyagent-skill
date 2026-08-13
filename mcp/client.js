@@ -195,7 +195,7 @@ export class AgentSecMcpClient {
 
     throw new AgentSecApiError(
       'unauthorized',
-      'MCP server requires AGENTSEC_API_KEY for this tool',
+      'MCP server requires FEEDMYAGENT_API_KEY for this tool',
       401
     )
   }
