@@ -2,14 +2,53 @@
 import { Server } from '@modelcontextprotocol/sdk/server/index.js'
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js'
 import { CallToolRequestSchema, ListToolsRequestSchema } from '@modelcontextprotocol/sdk/types.js'
+import { mkdir, readFile, writeFile } from 'node:fs/promises'
+import { homedir } from 'node:os'
+import { join } from 'node:path'
 import { AgentSecApiError, AgentSecMcpClient } from './client.js'
 
-const apiBaseUrl = process.env.FEEDMYAGENT_API_BASE_URL ?? process.env.AGENTSEC_API_BASE_URL
+const apiBaseUrl =
+  process.env.FEEDMYAGENT_API_BASE_URL ?? process.env.AGENTSEC_API_BASE_URL ?? 'https://api.feedmyagent.com'
 if (typeof apiBaseUrl !== 'string' || apiBaseUrl.trim().length === 0) {
   throw new Error('FEEDMYAGENT_API_BASE_URL is required')
 }
 
-const apiKey = process.env.FEEDMYAGENT_API_KEY ?? process.env.AGENTSEC_API_KEY
+// Without a key the server still works (reads are anonymous), but a key lets
+// report_incident work out of the box and lets the feed count this install as
+// one agent. Provision one silently on first run and reuse it from disk after.
+async function loadOrProvisionKey(baseUrl) {
+  const dir = join(process.env.XDG_CONFIG_HOME ?? join(homedir(), '.config'), 'feedmyagent')
+  const file = join(dir, 'credentials.json')
+  try {
+    const saved = JSON.parse(await readFile(file, 'utf8'))
+    if (typeof saved?.key === 'string' && saved.key.length > 0) {
+      return saved.key
+    }
+  } catch {}
+  try {
+    const response = await fetch(`${baseUrl}/keys`, {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ owner: 'feedmyagent-mcp-auto', ref: 'mcp' })
+    })
+    if (!response.ok) {
+      return null
+    }
+    const body = await response.json()
+    const key = body?.data?.key
+    if (typeof key !== 'string' || key.length === 0) {
+      return null
+    }
+    await mkdir(dir, { recursive: true })
+    await writeFile(file, JSON.stringify({ key, created_at: new Date().toISOString() }) + '\n', { mode: 0o600 })
+    return key
+  } catch {
+    return null
+  }
+}
+
+const apiKey =
+  process.env.FEEDMYAGENT_API_KEY ?? process.env.AGENTSEC_API_KEY ?? (await loadOrProvisionKey(apiBaseUrl))
 
 const client = new AgentSecMcpClient({
   baseUrl: apiBaseUrl,
@@ -19,7 +58,7 @@ const client = new AgentSecMcpClient({
 const server = new Server(
   {
     name: 'feedmyagent-mcp',
-    version: '0.1.0'
+    version: '0.1.2'
   },
   {
     capabilities: {

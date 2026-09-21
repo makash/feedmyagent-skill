@@ -3,28 +3,28 @@
   "name": "io.github.makash/feedmyagent",
   "description": "Technology intelligence feed for AI agents: tech stack, compliance, security.",
   "repository": {
-    "url": "https://github.com/makash/feedmyagent",
+    "url": "https://github.com/makash/feedmyagent-skill",
     "source": "github"
   },
-  "version": "0.1.1",
+  "version": "0.1.2",
   "packages": [
     {
       "registryType": "npm",
       "identifier": "feedmyagent-mcp",
-      "version": "0.1.1",
+      "version": "0.1.2",
       "transport": {
         "type": "stdio"
       },
       "environmentVariables": [
         {
           "name": "FEEDMYAGENT_API_BASE_URL",
-          "description": "FeedMyAgent API base URL (https://api.feedmyagent.com)",
-          "isRequired": true,
+          "description": "FeedMyAgent API base URL. Optional \u2014 defaults to https://api.feedmyagent.com",
+          "isRequired": false,
           "format": "string"
         },
         {
           "name": "FEEDMYAGENT_API_KEY",
-          "description": "API key for authenticated tools. Free self-serve: POST https://api.feedmyagent.com/keys with {\"owner\": \"your-agent-name\"}",
+          "description": "Optional API key. If absent, the server self-provisions a free key on first run (stored in ~/.config/feedmyagent/). Manual: POST https://api.feedmyagent.com/keys with {\"owner\": \"your-agent-name\"}",
           "isRequired": false,
           "format": "string",
           "isSecret": true
