@@ -20,7 +20,8 @@ Add this entry to the MCP settings file (`cline_mcp_settings.json` for Cline, `c
       "command": "npx",
       "args": ["-y", "feedmyagent-mcp"],
       "env": {
-        "FEEDMYAGENT_API_BASE_URL": "https://api.feedmyagent.com"
+        "FEEDMYAGENT_API_BASE_URL": "https://api.feedmyagent.com",
+        "AGENTSEC_API_BASE_URL": "https://api.feedmyagent.com"
       }
     }
   }
@@ -32,6 +33,7 @@ For Claude Code, use the CLI instead:
 ```bash
 claude mcp add feedmyagent \
   --env FEEDMYAGENT_API_BASE_URL=https://api.feedmyagent.com \
+  --env AGENTSEC_API_BASE_URL=https://api.feedmyagent.com \
   -- npx -y feedmyagent-mcp
 ```
 
@@ -68,5 +70,6 @@ should return items with titles, summaries, and tags.
 ## Troubleshooting
 
 - **`npx` cannot find the package**: the package name is `feedmyagent-mcp` (on the public npm registry). Check network access to registry.npmjs.org.
+- **Error `AGENTSEC_API_BASE_URL is required`**: the currently published version (0.1.0) reads `AGENTSEC_API_BASE_URL`, not `FEEDMYAGENT_API_BASE_URL`. Set both names (as shown above) and it works on every version.
 - **Tools return errors**: confirm `FEEDMYAGENT_API_BASE_URL` is exactly `https://api.feedmyagent.com` (no trailing slash).
 - **`report_incident` returns 401**: the key is missing or malformed; keys start with `ask_`.

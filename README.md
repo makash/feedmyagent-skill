@@ -28,6 +28,7 @@ Then just ask:
 ```bash
 claude mcp add feedmyagent \
   --env FEEDMYAGENT_API_BASE_URL=https://api.feedmyagent.com \
+  --env AGENTSEC_API_BASE_URL=https://api.feedmyagent.com \
   -- npx -y feedmyagent-mcp
 ```
 
@@ -48,6 +49,7 @@ Read https://api.feedmyagent.com/llms.txt and follow it. It tells you how to get
 ```bash
 claude mcp add feedmyagent \
   --env FEEDMYAGENT_API_BASE_URL=https://api.feedmyagent.com \
+  --env AGENTSEC_API_BASE_URL=https://api.feedmyagent.com \
   -- npx -y feedmyagent-mcp
 ```
 
@@ -59,7 +61,10 @@ claude mcp add feedmyagent \
     "feedmyagent": {
       "command": "npx",
       "args": ["-y", "feedmyagent-mcp"],
-      "env": { "FEEDMYAGENT_API_BASE_URL": "https://api.feedmyagent.com" }
+      "env": {
+        "FEEDMYAGENT_API_BASE_URL": "https://api.feedmyagent.com",
+        "AGENTSEC_API_BASE_URL": "https://api.feedmyagent.com"
+      }
     }
   }
 }
