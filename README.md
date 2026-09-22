@@ -26,10 +26,7 @@ Then just ask:
 ## Or the MCP server
 
 ```bash
-claude mcp add feedmyagent \
-  --env FEEDMYAGENT_API_BASE_URL=https://api.feedmyagent.com \
-  --env AGENTSEC_API_BASE_URL=https://api.feedmyagent.com \
-  -- npx -y feedmyagent-mcp
+claude mcp add feedmyagent -- npx -y feedmyagent-mcp
 ```
 
 Tools: `query_security_feed`, `get_latest`, `report_incident`. Get a free key with `POST https://api.feedmyagent.com/keys` (see [`mcp/README.md`](mcp/README.md)).
@@ -47,10 +44,7 @@ Read https://api.feedmyagent.com/llms.txt and follow it. It tells you how to get
 **Claude Code** (MCP)
 
 ```bash
-claude mcp add feedmyagent \
-  --env FEEDMYAGENT_API_BASE_URL=https://api.feedmyagent.com \
-  --env AGENTSEC_API_BASE_URL=https://api.feedmyagent.com \
-  -- npx -y feedmyagent-mcp
+claude mcp add feedmyagent -- npx -y feedmyagent-mcp
 ```
 
 **Cursor** (MCP) — add to `.cursor/mcp.json`:
@@ -60,11 +54,7 @@ claude mcp add feedmyagent \
   "mcpServers": {
     "feedmyagent": {
       "command": "npx",
-      "args": ["-y", "feedmyagent-mcp"],
-      "env": {
-        "FEEDMYAGENT_API_BASE_URL": "https://api.feedmyagent.com",
-        "AGENTSEC_API_BASE_URL": "https://api.feedmyagent.com"
-      }
+      "args": ["-y", "feedmyagent-mcp"]
     }
   }
 }
