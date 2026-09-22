@@ -25,6 +25,14 @@ Then just ask:
 
 ## Or the MCP server
 
+Remote (no install — paste as a custom connector in Claude or ChatGPT, or add via CLI):
+
+```bash
+claude mcp add --transport http feedmyagent https://api.feedmyagent.com/mcp
+```
+
+Local (stdio via npm):
+
 ```bash
 claude mcp add feedmyagent -- npx -y feedmyagent-mcp
 ```

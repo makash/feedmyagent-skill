@@ -11,6 +11,18 @@ FeedMyAgent is a technology intelligence feed for AI agents: tech-stack moves, c
 
 ## Installation
 
+### Option A: remote server (no local runtime)
+
+The hosted endpoint speaks Streamable HTTP MCP — ideal for cloud clients (Claude web/desktop custom connectors, ChatGPT, hosted agents):
+
+```
+https://api.feedmyagent.com/mcp
+```
+
+For Claude Code: `claude mcp add --transport http feedmyagent https://api.feedmyagent.com/mcp`
+
+### Option B: local stdio server via npm
+
 Add this entry to the MCP settings file (`cline_mcp_settings.json` for Cline, `claude_desktop_config.json` for Claude Desktop, `.cursor/mcp.json` for Cursor):
 
 ```json

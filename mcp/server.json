@@ -6,7 +6,7 @@
     "url": "https://github.com/makash/feedmyagent-skill",
     "source": "github"
   },
-  "version": "0.1.2",
+  "version": "0.1.3",
   "packages": [
     {
       "registryType": "npm",
@@ -30,6 +30,12 @@
           "isSecret": true
         }
       ]
+    }
+  ],
+  "remotes": [
+    {
+      "type": "streamable-http",
+      "url": "https://api.feedmyagent.com/mcp"
     }
   ]
 }
