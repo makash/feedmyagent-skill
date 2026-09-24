@@ -31,7 +31,7 @@ export class FeedMyAgentTrigger implements INodeType {
 	description: INodeTypeDescription = {
 		displayName: 'FeedMyAgent Trigger',
 		name: 'feedMyAgentTrigger',
-		icon: 'file:feedmyagent.svg',
+		icon: { light: 'file:feedmyagent.svg', dark: 'file:feedmyagent.dark.svg' },
 		group: ['trigger'],
 		version: 1,
 		subtitle: 'New items',

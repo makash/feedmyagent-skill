@@ -16,7 +16,10 @@ export class FeedMyAgentApi implements ICredentialType {
 
 	documentationUrl = 'https://feedmyagent.com';
 
-	icon: ICredentialType['icon'] = 'file:../nodes/FeedMyAgent/feedmyagent.svg';
+	icon: ICredentialType['icon'] = {
+		light: 'file:../nodes/FeedMyAgent/feedmyagent.svg',
+		dark: 'file:../nodes/FeedMyAgent/feedmyagent.dark.svg',
+	};
 
 	properties: INodeProperties[] = [
 		{

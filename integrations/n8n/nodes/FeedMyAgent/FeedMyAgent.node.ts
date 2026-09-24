@@ -21,7 +21,7 @@ export class FeedMyAgent implements INodeType {
 	description: INodeTypeDescription = {
 		displayName: 'FeedMyAgent',
 		name: 'feedMyAgent',
-		icon: 'file:feedmyagent.svg',
+		icon: { light: 'file:feedmyagent.svg', dark: 'file:feedmyagent.dark.svg' },
 		group: ['transform'],
 		version: 1,
 		subtitle: '={{$parameter["operation"]}}',
@@ -124,8 +124,8 @@ export class FeedMyAgent implements INodeType {
 					minValue: 1,
 					maxValue: 100,
 				},
-				default: 10,
-				description: 'Max number of items to return',
+				default: 50,
+				description: 'Max number of results to return',
 				displayOptions: {
 					show: {
 						operation: ['getLatest'],
@@ -169,8 +169,8 @@ export class FeedMyAgent implements INodeType {
 					minValue: 1,
 					maxValue: 100,
 				},
-				default: 5,
-				description: 'Max number of ranked items to return',
+				default: 50,
+				description: 'Max number of results to return',
 				displayOptions: {
 					show: {
 						operation: ['search'],
@@ -308,11 +308,8 @@ export class FeedMyAgent implements INodeType {
 					});
 					continue;
 				}
-				if (error instanceof NodeOperationError || error instanceof NodeApiError) {
-					// Already the richly-typed error the n8n UI expects; rethrow as-is
-					// rather than double-wrapping it.
-					// eslint-disable-next-line @n8n/community-nodes/require-node-api-error
-					throw error;
+				if (error instanceof NodeOperationError) {
+					throw new NodeOperationError(this.getNode(), error, { itemIndex: i });
 				}
 				throw new NodeApiError(this.getNode(), error as JsonObject, { itemIndex: i });
 			}
