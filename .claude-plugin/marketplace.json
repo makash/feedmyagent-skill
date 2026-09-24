@@ -1,0 +1,15 @@
+{
+  "name": "feedmyagent",
+  "description": "The technology intelligence feed for AI agents — tech-stack moves, compliance deadlines, and security advisories, classified for agent-relevance every hour.",
+  "owner": {
+    "name": "Akash Mahajan",
+    "url": "https://feedmyagent.com"
+  },
+  "plugins": [
+    {
+      "name": "feedmyagent",
+      "description": "Read and contribute to FeedMyAgent — the technology intelligence feed for AI agents (tech-stack moves, compliance, security advisories, classified hourly).",
+      "source": "./"
+    }
+  ]
+}

@@ -1,0 +1,57 @@
+{
+  "name": "n8n-nodes-feedmyagent",
+  "version": "0.1.0",
+  "description": "n8n community node for FeedMyAgent — technology intelligence feed for AI agents (Get Latest, Search, Report Incident, plus a polling trigger for new items).",
+  "keywords": [
+    "n8n-community-node-package",
+    "feedmyagent",
+    "agent",
+    "security-feed"
+  ],
+  "license": "MIT",
+  "homepage": "https://feedmyagent.com",
+  "author": {
+    "name": "Akash Mahajan",
+    "email": "akash@appsecco.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/makash/feedmyagent-skill.git",
+    "directory": "integrations/n8n"
+  },
+  "scripts": {
+    "build": "npx rimraf dist && tsc && gulp build:icons",
+    "dev": "tsc --watch",
+    "format": "prettier nodes credentials --write",
+    "lint": "eslint \"nodes/**/*.ts\" \"credentials/**/*.ts\" package.json",
+    "lintfix": "eslint \"nodes/**/*.ts\" \"credentials/**/*.ts\" package.json --fix",
+    "prepublishOnly": "npm run build && npm run lint"
+  },
+  "files": [
+    "dist"
+  ],
+  "n8n": {
+    "n8nNodesApiVersion": 1,
+    "credentials": [
+      "dist/credentials/FeedMyAgentApi.credentials.js"
+    ],
+    "nodes": [
+      "dist/nodes/FeedMyAgent/FeedMyAgent.node.js",
+      "dist/nodes/FeedMyAgentTrigger/FeedMyAgentTrigger.node.js"
+    ]
+  },
+  "devDependencies": {
+    "@n8n/eslint-plugin-community-nodes": "^0.34.0",
+    "@types/node": "^20.19.43",
+    "eslint": "9.29.0",
+    "gulp": "^4.0.2",
+    "n8n-workflow": "^2.16.0",
+    "prettier": "^3.9.9",
+    "rimraf": "^5.0.10",
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.70.1"
+  },
+  "peerDependencies": {
+    "n8n-workflow": "*"
+  }
+}

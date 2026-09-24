@@ -1,0 +1,23 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "feedmyagent-crewai-dev"
+version = "0.0.0"
+description = "Local dev/test harness for the FeedMyAgent crewAI tool. NOT part of the upstream crewAI-tools fork payload — only crewai_tools/tools/feedmyagent_tool/ and examples/ get copied into the fork. See README.md."
+requires-python = ">=3.10"
+dependencies = [
+    "crewai>=1.0.0",
+    "feedmyagent",
+    "pydantic>=2.0",
+]
+
+[project.optional-dependencies]
+test = ["pytest>=7.0"]
+
+[tool.hatch.build.targets.wheel]
+packages = ["crewai_tools"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

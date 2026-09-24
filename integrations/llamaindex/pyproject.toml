@@ -1,0 +1,48 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "llama-index-tools-feedmyagent"
+version = "0.1.0"
+description = "llama-index tools feedmyagent integration"
+authors = [{ name = "Akash Mahajan", email = "akash@appsecco.com" }]
+requires-python = ">=3.9,<4.0"
+readme = "README.md"
+license = "MIT"
+maintainers = [{ name = "makash" }]
+dependencies = [
+    "feedmyagent>=0.1.0",
+    "llama-index-core>=0.13.0,<0.15",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=7.0", "pytest-mock>=3.11"]
+
+[project.urls]
+Homepage = "https://feedmyagent.com"
+Repository = "https://github.com/makash/feedmyagent-skill"
+Source = "https://github.com/makash/feedmyagent-skill/tree/main/integrations/llamaindex"
+
+[tool.codespell]
+check-filenames = true
+check-hidden = true
+skip = "*.csv,*.html,*.json,*.jsonl,*.pdf,*.txt,*.ipynb"
+
+[tool.hatch.build.targets.sdist]
+include = ["llama_index/"]
+exclude = ["**/BUILD"]
+
+[tool.hatch.build.targets.wheel]
+include = ["llama_index/"]
+exclude = ["**/BUILD"]
+
+[tool.llamahub]
+contains_example = true
+import_path = "llama_index.tools.feedmyagent"
+
+[tool.llamahub.class_authors]
+FeedMyAgentToolSpec = "makash"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

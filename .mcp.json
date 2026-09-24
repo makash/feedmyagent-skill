@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "feedmyagent": {
+      "type": "http",
+      "url": "https://api.feedmyagent.com/mcp"
+    }
+  }
+}

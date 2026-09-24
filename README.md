@@ -9,7 +9,16 @@ Your agent has a training cutoff. The agent ecosystem doesn't care. FeedMyAgent 
 - 🧠 **Classified hourly for agent-relevance** — frameworks, models, tools, compliance (EU AI Act, NIST), security advisories. Junk and self-promo get auto-archived.
 - 🛡️ **Injection-aware** — raw content is never served; only vetted summaries. Content is data, not instructions.
 
-## Install the skill (works in Kimi Code, Claude Code, Codex, Cursor, and other Agent Skills hosts)
+## Install as a Claude Code plugin (skill + MCP, one command)
+
+```bash
+claude plugin marketplace add makash/feedmyagent-skill
+claude plugin install feedmyagent@feedmyagent
+```
+
+This installs the `feedmyagent` Agent Skill (skills/feedmyagent/SKILL.md) and registers the remote MCP server (`https://api.feedmyagent.com/mcp`, Streamable HTTP) in one step — no separate `claude mcp add` needed. Restart Claude Code if it doesn't pick the plugin up immediately.
+
+## Install the skill only (works in Kimi Code, Claude Code, Codex, Cursor, and other Agent Skills hosts)
 
 ```bash
 npx skills add https://github.com/makash/feedmyagent-skill/tree/main/skills/feedmyagent
@@ -121,6 +130,20 @@ Ready-to-use agent templates in [`reference-agents/`](reference-agents/) — eac
 - [`cloud-change-monitor.md`](reference-agents/cloud-change-monitor.md) — changelog-style digest of breaking platform changes (deprecations, API changes, pricing)
 - [`weekly-cto-digest.md`](reference-agents/weekly-cto-digest.md) — weekly top-scored rollup across all categories with "why this matters" for a CTO audience
 
+## Framework integrations
+
+FeedMyAgent shipped directly inside the tools agents already install. Each integration is a small, framework-native package or node under [`integrations/`](integrations/) (plus the Claude Code plugin, which lives at the repo root):
+
+- [`integrations/python`](integrations/python/) — `feedmyagent` on PyPI, the stdlib-free Python SDK other Python integrations build on
+- [`integrations/langchain`](integrations/langchain/) — `langchain-feedmyagent`, a LangChain/LangGraph tool package
+- [`integrations/crewai`](integrations/crewai/) — `FeedMyAgentTool` for [crewAI-tools](https://github.com/crewAIInc/crewAI-tools)
+- [`integrations/llamaindex`](integrations/llamaindex/) — `llama-index-tools-feedmyagent`, a LlamaIndex tool spec
+- [`integrations/n8n`](integrations/n8n/) — `n8n-nodes-feedmyagent`, a community node for n8n workflows
+- [`integrations/typescript-examples`](integrations/typescript-examples/) — runnable TypeScript examples for the [OpenAI Agents SDK](integrations/typescript-examples/openai-agents/) and the [Vercel AI SDK](integrations/typescript-examples/vercel-ai-sdk/), both wired to the hosted MCP server
+- **Claude Code plugin** ([`.claude-plugin/`](.claude-plugin/)) — `claude plugin marketplace add makash/feedmyagent-skill` (see [Install as a Claude Code plugin](#install-as-a-claude-code-plugin-skill--mcp-one-command) above)
+
+Some of these are still being built — a directory listed above with only a stub or no `README.md` yet is in progress.
+
 ## What your agent gets
 
 - **Tech stack**: model releases, framework updates, infra moves (OpenAI, DeepMind, Hugging Face, arXiv, Vercel, Cloudflare…)
@@ -138,6 +161,8 @@ mcp/                          # the MCP server (npm: feedmyagent-mcp)
 docs/                         # the GitHub Pages site
 examples/                     # runnable Python/TypeScript examples + sample prompts
 reference-agents/             # ready-to-use agent templates (CVE briefings, vendor watch, digests)
+integrations/                 # framework-native packages: python, langchain, crewai, llamaindex, n8n, typescript-examples
+.claude-plugin/                # Claude Code plugin + marketplace manifest
 ```
 
 ## Links

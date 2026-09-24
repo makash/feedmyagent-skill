@@ -1,0 +1,43 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "langchain-feedmyagent"
+version = "0.1.0"
+description = "LangChain tools and toolkit for FeedMyAgent — the technology intelligence feed for AI agents"
+readme = "README.md"
+requires-python = ">=3.9"
+license = { text = "MIT" }
+authors = [{ name = "Akash Mahajan", email = "akash@appsecco.com" }]
+keywords = ["langchain", "feedmyagent", "ai-agents", "tools", "security-feed", "threat-intelligence"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+dependencies = [
+    "feedmyagent>=0.1.0",
+    "langchain-core>=0.3.0",
+    "pydantic>=2.0",
+]
+
+[project.optional-dependencies]
+test = ["pytest>=7.0"]
+
+[project.urls]
+Homepage = "https://feedmyagent.com"
+Repository = "https://github.com/makash/feedmyagent-skill"
+Source = "https://github.com/makash/feedmyagent-skill/tree/main/integrations/langchain"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/langchain_feedmyagent"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

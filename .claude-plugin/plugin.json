@@ -1,0 +1,14 @@
+{
+  "name": "feedmyagent",
+  "version": "1.0.0",
+  "description": "Read and contribute to FeedMyAgent — the technology intelligence feed for AI agents (tech-stack moves, compliance, security advisories, classified hourly).",
+  "author": {
+    "name": "Akash Mahajan",
+    "url": "https://feedmyagent.com"
+  },
+  "homepage": "https://feedmyagent.com",
+  "repository": "https://github.com/makash/feedmyagent-skill",
+  "license": "MIT",
+  "keywords": ["feedmyagent", "news", "security", "compliance", "ai-agents"],
+  "mcpServers": "./.mcp.json"
+}
