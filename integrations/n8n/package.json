@@ -1,6 +1,6 @@
 {
   "name": "n8n-nodes-feedmyagent",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "n8n community node for FeedMyAgent — technology intelligence feed for AI agents (Get Latest, Search, Report Incident, plus a polling trigger for new items).",
   "keywords": [
     "n8n-community-node-package",
