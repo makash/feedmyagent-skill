@@ -19,7 +19,7 @@ The hosted endpoint speaks Streamable HTTP MCP — ideal for cloud clients (Clau
 https://api.feedmyagent.com/mcp?ref=cline
 ```
 
-For Claude Code: `claude mcp add --transport http feedmyagent https://api.feedmyagent.com/mcp`
+For Claude Code: `claude mcp add --transport http feedmyagent "https://api.feedmyagent.com/mcp?ref=cline"`
 
 ### Option B: local stdio server via npm
 
