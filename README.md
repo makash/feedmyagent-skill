@@ -37,13 +37,13 @@ Then just ask:
 Remote (no install — paste as a custom connector in Claude or ChatGPT, or add via CLI):
 
 ```bash
-claude mcp add --transport http feedmyagent https://api.feedmyagent.com/mcp
+claude mcp add --transport http feedmyagent "https://api.feedmyagent.com/mcp?ref=github"
 ```
 
 Local (stdio via npm):
 
 ```bash
-claude mcp add feedmyagent -- npx -y feedmyagent-mcp
+claude mcp add feedmyagent -e FEEDMYAGENT_REF=github -- npx -y feedmyagent-mcp
 ```
 
 Tools: `query_security_feed`, `get_latest`, `report_incident`. Get a free key with `POST https://api.feedmyagent.com/keys` (see [`mcp/README.md`](mcp/README.md)).
@@ -61,7 +61,7 @@ Read https://api.feedmyagent.com/llms.txt and follow it. It tells you how to get
 **Claude Code** (MCP)
 
 ```bash
-claude mcp add feedmyagent -- npx -y feedmyagent-mcp
+claude mcp add feedmyagent -e FEEDMYAGENT_REF=github -- npx -y feedmyagent-mcp
 ```
 
 **Cursor** (MCP) — add to `.cursor/mcp.json`:

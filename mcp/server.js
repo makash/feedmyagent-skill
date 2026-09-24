@@ -16,6 +16,14 @@ if (typeof apiBaseUrl !== 'string' || apiBaseUrl.trim().length === 0) {
 // Without a key the server still works (reads are anonymous), but a key lets
 // report_incident work out of the box and lets the feed count this install as
 // one agent. Provision one silently on first run and reuse it from disk after.
+// Where this install came from (e.g. FEEDMYAGENT_REF=glama in a directory's
+// install snippet), so the self-provisioned key records its channel. The API
+// sanitizes ref to [a-z0-9-] and drops anything else.
+function installRef() {
+  const raw = (process.env.FEEDMYAGENT_REF ?? '').trim().toLowerCase()
+  return /^[a-z0-9-]{1,48}$/.test(raw) ? `mcp-${raw}` : 'mcp'
+}
+
 async function loadOrProvisionKey(baseUrl) {
   const dir = join(process.env.XDG_CONFIG_HOME ?? join(homedir(), '.config'), 'feedmyagent')
   const file = join(dir, 'credentials.json')
@@ -24,12 +32,14 @@ async function loadOrProvisionKey(baseUrl) {
     if (typeof saved?.key === 'string' && saved.key.length > 0) {
       return saved.key
     }
-  } catch {}
+  } catch {
+    // No saved credentials; fall through to provisioning.
+  }
   try {
     const response = await fetch(`${baseUrl}/keys`, {
       method: 'POST',
       headers: { 'content-type': 'application/json' },
-      body: JSON.stringify({ owner: 'feedmyagent-mcp-auto', ref: 'mcp' })
+      body: JSON.stringify({ owner: 'feedmyagent-mcp-auto', ref: installRef() })
     })
     if (!response.ok) {
       return null
@@ -55,10 +65,17 @@ const client = new AgentSecMcpClient({
   apiKey
 })
 
+// title/description/websiteUrl/icons mirror the Worker's initialize serverInfo
+// (src/index.ts MCP_SERVER_INFO): MCP Implementation metadata fields, ignored
+// by clients that predate them.
 const server = new Server(
   {
     name: 'feedmyagent-mcp',
-    version: '0.1.2'
+    title: 'FeedMyAgent',
+    version: '0.1.3',
+    description: 'Technology intelligence feed for AI agents: tech stack, compliance, security.',
+    websiteUrl: 'https://feedmyagent.com',
+    icons: [{ src: 'https://feedmyagent.com/icon.svg', mimeType: 'image/svg+xml' }]
   },
   {
     capabilities: {
@@ -95,6 +112,51 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
         },
         required: ['query'],
         additionalProperties: false
+      },
+      outputSchema: {
+        type: 'object',
+        properties: {
+          data: {
+            type: 'array',
+            description: 'Matching feed items.',
+            items: {
+              type: 'object',
+              properties: {
+                id: { type: 'string', description: 'Item id.' },
+                title: { type: 'string', description: 'Item title.' },
+                summary: {
+                  type: ['string', 'null'],
+                  description: 'Short summary, or null when the item has not been enriched yet.'
+                },
+                tags: {
+                  type: 'array',
+                  items: { type: 'string' },
+                  description: 'Classifier tags.'
+                },
+                score: { type: 'number', description: 'Community ranking score.' },
+                url: { type: 'string', description: 'Canonical item URL.' }
+              },
+              required: ['id', 'title', 'summary', 'tags', 'score', 'url'],
+              additionalProperties: false
+            }
+          },
+          source: {
+            type: 'object',
+            description: 'Provenance of the payload.',
+            properties: {
+              name: { type: 'string', description: 'Feed name.' },
+              url: { type: 'string', description: 'Feed homepage URL.' }
+            },
+            required: ['name', 'url'],
+            additionalProperties: false
+          }
+        },
+        required: ['data', 'source'],
+        additionalProperties: false
+      },
+      annotations: {
+        readOnlyHint: true,
+        openWorldHint: true
       }
     },
     {
@@ -122,6 +184,51 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
           }
         },
         additionalProperties: false
+      },
+      outputSchema: {
+        type: 'object',
+        properties: {
+          data: {
+            type: 'array',
+            description: 'Matching feed items.',
+            items: {
+              type: 'object',
+              properties: {
+                id: { type: 'string', description: 'Item id.' },
+                title: { type: 'string', description: 'Item title.' },
+                summary: {
+                  type: ['string', 'null'],
+                  description: 'Short summary, or null when the item has not been enriched yet.'
+                },
+                tags: {
+                  type: 'array',
+                  items: { type: 'string' },
+                  description: 'Classifier tags.'
+                },
+                score: { type: 'number', description: 'Community ranking score.' },
+                url: { type: 'string', description: 'Canonical item URL.' }
+              },
+              required: ['id', 'title', 'summary', 'tags', 'score', 'url'],
+              additionalProperties: false
+            }
+          },
+          source: {
+            type: 'object',
+            description: 'Provenance of the payload.',
+            properties: {
+              name: { type: 'string', description: 'Feed name.' },
+              url: { type: 'string', description: 'Feed homepage URL.' }
+            },
+            required: ['name', 'url'],
+            additionalProperties: false
+          }
+        },
+        required: ['data', 'source'],
+        additionalProperties: false
+      },
+      annotations: {
+        readOnlyHint: true,
+        openWorldHint: true
       }
     },
     {
@@ -146,6 +253,42 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
         },
         required: ['title', 'description'],
         additionalProperties: false
+      },
+      outputSchema: {
+        type: 'object',
+        properties: {
+          data: {
+            type: 'object',
+            description: 'The created submission.',
+            properties: {
+              id: { type: 'string', description: 'Created item id.' },
+              status: {
+                type: 'string',
+                description: 'Moderation status; usually "pending" until classification publishes it.'
+              },
+              url: { type: 'string', description: 'Reference URL stored for the submission.' }
+            },
+            required: ['id', 'status', 'url'],
+            additionalProperties: false
+          },
+          source: {
+            type: 'object',
+            description: 'Provenance of the payload.',
+            properties: {
+              name: { type: 'string', description: 'Feed name.' },
+              url: { type: 'string', description: 'Feed homepage URL.' }
+            },
+            required: ['name', 'url'],
+            additionalProperties: false
+          }
+        },
+        required: ['data', 'source'],
+        additionalProperties: false
+      },
+      annotations: {
+        readOnlyHint: false,
+        destructiveHint: false,
+        idempotentHint: false
       }
     }
   ]
@@ -212,17 +355,17 @@ function readArgs(value) {
 }
 
 function responsePayload(data) {
+  // structuredContent mirrors the text block so the declared outputSchemas
+  // stay honest (MCP structured tool output).
+  const payload = { data, source: { name: 'FeedMyAgent', url: 'https://feedmyagent.com' } }
   return {
     content: [
       {
         type: 'text',
-        text: JSON.stringify(
-          { data, source: { name: 'FeedMyAgent', url: 'https://feedmyagent.com' } },
-          null,
-          2
-        )
+        text: JSON.stringify(payload, null, 2)
       }
-    ]
+    ],
+    structuredContent: payload
   }
 }
 

@@ -2,7 +2,7 @@
   "mcpServers": {
     "feedmyagent": {
       "type": "http",
-      "url": "https://api.feedmyagent.com/mcp"
+      "url": "https://api.feedmyagent.com/mcp?ref=claude-plugin"
     }
   }
 }

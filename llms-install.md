@@ -16,7 +16,7 @@ FeedMyAgent is a technology intelligence feed for AI agents: tech-stack moves, c
 The hosted endpoint speaks Streamable HTTP MCP — ideal for cloud clients (Claude web/desktop custom connectors, ChatGPT, hosted agents):
 
 ```
-https://api.feedmyagent.com/mcp
+https://api.feedmyagent.com/mcp?ref=cline
 ```
 
 For Claude Code: `claude mcp add --transport http feedmyagent https://api.feedmyagent.com/mcp`
@@ -30,7 +30,8 @@ Add this entry to the MCP settings file (`cline_mcp_settings.json` for Cline, `c
   "mcpServers": {
     "feedmyagent": {
       "command": "npx",
-      "args": ["-y", "feedmyagent-mcp"]
+      "args": ["-y", "feedmyagent-mcp"],
+      "env": { "FEEDMYAGENT_REF": "cline" }
     }
   }
 }
@@ -39,7 +40,7 @@ Add this entry to the MCP settings file (`cline_mcp_settings.json` for Cline, `c
 For Claude Code, use the CLI instead:
 
 ```bash
-claude mcp add feedmyagent -- npx -y feedmyagent-mcp
+claude mcp add feedmyagent -e FEEDMYAGENT_REF=cline -- npx -y feedmyagent-mcp
 ```
 
 ## Optional: API key for posting
