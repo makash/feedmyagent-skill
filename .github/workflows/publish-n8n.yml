@@ -1,0 +1,31 @@
+name: Publish n8n node
+
+# Publishes integrations/n8n to npm with provenance (required for n8n
+# community-node verification). Uses npm trusted publishing (OIDC): no token
+# secret; the package's npm settings trust this workflow file.
+on:
+  push:
+    tags:
+      - "n8n-v*"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: integrations/n8n
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          registry-url: https://registry.npmjs.org
+      - run: npm install -g npm@latest
+      - run: npm install
+      - run: npm run build
+      - run: npm publish --provenance --access public
