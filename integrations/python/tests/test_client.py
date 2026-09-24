@@ -296,3 +296,10 @@ def test_provision_key_posts_owner_and_ref_and_returns_key(monkeypatch):
 
     assert key == "ask_abc123"
     assert captured["body"] == {"owner": "my-agent", "ref": "my-ref/0.1"}
+
+
+def test_rejects_non_https_base_url():
+    import pytest
+    with pytest.raises(ValueError):
+        FeedMyAgent(base_url="http://example.com")
+    assert FeedMyAgent(base_url="http://localhost:8787").base_url == "http://localhost:8787"

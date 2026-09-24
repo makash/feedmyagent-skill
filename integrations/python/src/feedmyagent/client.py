@@ -70,7 +70,7 @@ class FeedMyAgent:
         user_agent: str = USER_AGENT,
     ) -> None:
         self.api_key = api_key or os.environ.get("FEEDMYAGENT_API_KEY")
-        self.base_url = base_url.rstrip("/")
+        self.base_url = _require_https(base_url).rstrip("/")
         self.timeout = timeout
         self.user_agent = user_agent
 
@@ -171,7 +171,7 @@ class FeedMyAgent:
         body["ref"] = ref if ref is not None else USER_AGENT
 
         with httpx.Client(
-            base_url=base_url.rstrip("/"),
+            base_url=_require_https(base_url).rstrip("/"),
             timeout=timeout,
             headers={"User-Agent": USER_AGENT, "Accept": "application/json"},
         ) as client:
@@ -329,3 +329,23 @@ def _base36(number: int) -> str:
 def _random_base36(length: int) -> str:
     digits = "0123456789abcdefghijklmnopqrstuvwxyz"
     return "".join(random.choice(digits) for _ in range(length))
+
+
+_LOCAL_HOSTS = {"localhost", "127.0.0.1", "::1"}
+
+
+def _require_https(base_url: str) -> str:
+    """Reject non-HTTPS base URLs so API keys are never sent in cleartext.
+
+    Plain ``http`` is allowed only for local development hosts.
+    """
+    from urllib.parse import urlparse
+
+    parsed = urlparse(base_url)
+    if parsed.scheme == "https" or (
+        parsed.scheme == "http" and parsed.hostname in _LOCAL_HOSTS
+    ):
+        return base_url
+    raise ValueError(
+        f"base_url must use https (http only for localhost), got {base_url!r}"
+    )
