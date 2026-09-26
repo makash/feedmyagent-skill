@@ -57,13 +57,23 @@ async function loadOrProvisionKey(baseUrl) {
   }
 }
 
-const apiKey =
-  process.env.FEEDMYAGENT_API_KEY ?? process.env.AGENTSEC_API_KEY ?? (await loadOrProvisionKey(apiBaseUrl))
+const configuredKey = process.env.FEEDMYAGENT_API_KEY ?? process.env.AGENTSEC_API_KEY
 
 const client = new AgentSecMcpClient({
   baseUrl: apiBaseUrl,
-  apiKey
+  apiKey: configuredKey
 })
+
+// Provision lazily, on the first tool call rather than at startup: package
+// scanners and registry probes that only start the server (or list tools)
+// must not mint keys, or they inflate the adoption count.
+let keyPromise = null
+async function ensureApiKey() {
+  if (client.apiKey) return
+  keyPromise ??= loadOrProvisionKey(apiBaseUrl)
+  const key = await keyPromise
+  if (typeof key === 'string' && key.length > 0) client.apiKey = key
+}
 
 // title/description/websiteUrl/icons mirror the Worker's initialize serverInfo
 // (src/index.ts MCP_SERVER_INFO): MCP Implementation metadata fields, ignored
@@ -72,7 +82,7 @@ const server = new Server(
   {
     name: 'feedmyagent-mcp',
     title: 'FeedMyAgent',
-    version: '0.1.3',
+    version: '0.1.4',
     description: 'Technology intelligence feed for AI agents: tech stack, compliance, security.',
     websiteUrl: 'https://feedmyagent.com',
     icons: [{ src: 'https://feedmyagent.com/icon.svg', mimeType: 'image/svg+xml' }]
@@ -297,6 +307,7 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
 server.setRequestHandler(CallToolRequestSchema, async (request) => {
   const name = request.params.name
   const args = readArgs(request.params.arguments)
+  await ensureApiKey()
 
   try {
     if (name === 'query_security_feed') {
