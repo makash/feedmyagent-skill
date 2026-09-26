@@ -1,9 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
-  <rect width="512" height="512" rx="96" fill="#0b1220"/>
-  <!-- incoming stream -->
-  <circle cx="96" cy="256" r="11" fill="#22d3ee" opacity="0.35"/>
-  <circle cx="146" cy="256" r="13" fill="#22d3ee" opacity="0.6"/>
-  <circle cx="198" cy="256" r="15" fill="#22d3ee" opacity="0.85"/>
-  <!-- block cursor with a notch "mouth" -->
-  <path d="M248 140 h150 a14 14 0 0 1 14 14 v204 a14 14 0 0 1 -14 14 H248 a14 14 0 0 1 -14 -14 v-64 l34 -38 -34 -38 v-64 a14 14 0 0 1 14 -14 z" fill="#22d3ee"/>
-</svg>
