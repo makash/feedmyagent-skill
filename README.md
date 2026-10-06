@@ -190,3 +190,7 @@ MIT
 ## Maintainers: Claude directory plugin
 
 `plugin/` is the self-contained copy submitted to Anthropic's plugin directory (the repo root also holds SDKs that read `FEEDMYAGENT_API_KEY`, which the directory scanner holds for review). `plugin/skills/feedmyagent/SKILL.md` must stay identical to `skills/feedmyagent/SKILL.md`: `cmp skills/feedmyagent/SKILL.md plugin/skills/feedmyagent/SKILL.md`.
+
+## Security
+
+See [SECURITY.md](SECURITY.md).
