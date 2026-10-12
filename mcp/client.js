@@ -1,4 +1,6 @@
 const SOURCE_VALUES = new Set(['reddit', 'x', 'rss', 'cve', 'hn', 'submitted'])
+const PRODUCT_VALUES = new Set(['ainews', 'events'])
+const EVENT_KIND_VALUES = new Set(['music', 'performance', 'meetup', 'conference', 'festival'])
 
 export class AgentSecApiError extends Error {
   constructor(code, message, status) {
@@ -25,11 +27,17 @@ export class AgentSecMcpClient {
   async getLatest(options = {}) {
     const limit = clampLimit(options.limit ?? 10)
     const source = parseOptionalSource(options.source)
+    const product = parseOptionalProduct(options.product)
     const tags = parseOptionalTags(options.tags)
 
     const searchParams = new URLSearchParams()
-    searchParams.set('sort', 'date')
+    // The events product owns its sort param (starts_at|newest); date/score
+    // are ainews sorts. Default ainews requests keep the historic values.
+    searchParams.set('sort', product === 'events' ? 'newest' : 'date')
     searchParams.set('limit', String(limit))
+    if (product !== null) {
+      searchParams.set('product', product)
+    }
     if (source !== null) {
       searchParams.set('source', source)
     }
@@ -48,12 +56,17 @@ export class AgentSecMcpClient {
 
     const query = parseRequiredString(options.query, 'query')
     const limit = clampLimit(options.limit ?? 5)
+    const product = parseOptionalProduct(options.product)
     const tags = parseOptionalTags(options.tags)
 
     const candidateLimit = Math.max(20, Math.min(100, limit * 5))
     const searchParams = new URLSearchParams()
-    searchParams.set('sort', 'score')
+    // See getLatest: events owns its sort param, so use newest there.
+    searchParams.set('sort', product === 'events' ? 'newest' : 'score')
     searchParams.set('limit', String(candidateLimit))
+    if (product !== null) {
+      searchParams.set('product', product)
+    }
     for (const tag of tags) {
       searchParams.append('tags', tag)
     }
@@ -110,6 +123,77 @@ export class AgentSecMcpClient {
       status: created.status,
       url: created.url
     }
+  }
+
+  async findEvents(options = {}) {
+    const limit = clampLimit(options.limit ?? 50)
+    const kind = parseOptionalEventKind(options.kind)
+    const genres = parseOptionalTags(options.genres, 'genres')
+    const topics = parseOptionalTags(options.topics, 'topics')
+    const from = parseOptionalStringParam(options.from, 'from')
+    const to = parseOptionalStringParam(options.to, 'to')
+
+    const searchParams = new URLSearchParams()
+    searchParams.set('product', 'events')
+    searchParams.set('sort', 'starts_at')
+    searchParams.set('limit', String(limit))
+    if (kind !== null) {
+      searchParams.append('tags', kind)
+    }
+    for (const genre of genres) {
+      searchParams.append('tags', genre)
+    }
+    for (const topic of topics) {
+      searchParams.append('tags', topic)
+    }
+    if (from !== null) {
+      searchParams.set('from', from)
+    }
+    if (to !== null) {
+      searchParams.set('to', to)
+    }
+
+    const items = await this.#requestItems(searchParams, false)
+    return items.slice(0, limit).map((item) => toEventToolItem(item))
+  }
+
+  async reportEvent(options) {
+    if (options === null || typeof options !== 'object' || Array.isArray(options)) {
+      throw new AgentSecApiError('invalid_request', 'event payload must be an object', 400)
+    }
+
+    this.#requireApiKey()
+
+    const title = parseRequiredString(options.title, 'title')
+    const description = parseRequiredString(options.description, 'description')
+    const event = parseOptionalEvent(options.event)
+    const eventUrl = buildIncidentUrl(this.baseUrl, options.url, this.incidentIdFactory)
+
+    const created = await this.#requestJson('/items', {
+      method: 'POST',
+      requiresApiKey: true,
+      body: {
+        url: eventUrl,
+        title,
+        raw_content: description,
+        product: 'events',
+        product_data: event === null ? {} : { event }
+      }
+    })
+
+    return {
+      id: created.id,
+      status: created.status,
+      url: created.url
+    }
+  }
+
+  async listProducts() {
+    const data = await this.#requestJson('/products', { method: 'GET', requiresApiKey: false })
+    if (!Array.isArray(data)) {
+      throw new AgentSecApiError('internal', 'REST API returned an invalid products payload', 500)
+    }
+    return data
   }
 
   async #requestItems(searchParams, requiresApiKey) {
@@ -201,6 +285,17 @@ export class AgentSecMcpClient {
   }
 }
 
+function toEventToolItem(item) {
+  const rawEvent =
+    item.product_data !== null && typeof item.product_data === 'object' && !Array.isArray(item.product_data)
+      ? item.product_data.event
+      : null
+  return {
+    ...toToolItem(item),
+    event: rawEvent !== null && typeof rawEvent === 'object' && !Array.isArray(rawEvent) ? rawEvent : {}
+  }
+}
+
 function toToolItem(item) {
   return {
     id: item.id,
@@ -232,29 +327,89 @@ function parseOptionalSource(source) {
   return source
 }
 
-function parseOptionalTags(tags) {
+function parseOptionalProduct(product) {
+  if (product === undefined || product === null) {
+    return null
+  }
+
+  if (typeof product !== 'string') {
+    throw new AgentSecApiError('invalid_request', 'product must be a string', 400)
+  }
+
+  if (!PRODUCT_VALUES.has(product)) {
+    throw new AgentSecApiError('invalid_request', 'product must be one of: ainews, events', 400)
+  }
+
+  return product
+}
+
+function parseOptionalTags(tags, fieldName = 'tags') {
   if (tags === undefined || tags === null) {
     return []
   }
 
   if (!Array.isArray(tags)) {
-    throw new AgentSecApiError('invalid_request', 'tags must be an array of strings', 400)
+    throw new AgentSecApiError('invalid_request', `${fieldName} must be an array of strings`, 400)
   }
 
   const parsed = []
   for (const tag of tags) {
     if (typeof tag !== 'string') {
-      throw new AgentSecApiError('invalid_request', 'tags must be an array of strings', 400)
+      throw new AgentSecApiError('invalid_request', `${fieldName} must be an array of strings`, 400)
     }
 
     const trimmed = tag.trim()
     if (trimmed.length === 0) {
-      throw new AgentSecApiError('invalid_request', 'tags must not contain empty values', 400)
+      throw new AgentSecApiError('invalid_request', `${fieldName} must not contain empty values`, 400)
     }
     parsed.push(trimmed)
   }
 
   return parsed
+}
+
+function parseOptionalEventKind(kind) {
+  if (kind === undefined || kind === null) {
+    return null
+  }
+
+  if (typeof kind !== 'string') {
+    throw new AgentSecApiError('invalid_request', 'kind must be a string', 400)
+  }
+
+  if (!EVENT_KIND_VALUES.has(kind)) {
+    throw new AgentSecApiError(
+      'invalid_request',
+      'kind must be one of: music, performance, meetup, conference, festival',
+      400
+    )
+  }
+
+  return kind
+}
+
+function parseOptionalEvent(event) {
+  if (event === undefined || event === null) {
+    return null
+  }
+
+  if (typeof event !== 'object' || Array.isArray(event)) {
+    throw new AgentSecApiError('invalid_request', 'event must be an object', 400)
+  }
+
+  return event
+}
+
+function parseOptionalStringParam(value, fieldName) {
+  if (value === undefined || value === null) {
+    return null
+  }
+
+  if (typeof value !== 'string' || value.trim().length === 0) {
+    throw new AgentSecApiError('invalid_request', `${fieldName} must be a non-empty string`, 400)
+  }
+
+  return value.trim()
 }
 
 function parseRequiredString(value, fieldName) {
