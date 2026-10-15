@@ -100,18 +100,18 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
       name: 'query_security_feed',
       title: 'Query Security Feed',
       description:
-        'Search the ainews feed for items relevant to what your agent is about to do — technology, compliance, and security news for AI agents — ranked by relevance to your natural-language query. Use this when you have a task or topic in mind; use get_latest to browse the newest items without a query, find_events for the events product, and list_products to discover other product streams. Read-only: returns public feed data and needs no API key.',
+        'Search the ainews feed for items relevant to what your agent is about to do — technology, compliance, and security news for AI agents — ranked by relevance to your natural-language query. Use this when you have a task or topic in mind; use get_latest to browse the newest items without a query, find_events for the events product, and list_products to discover other product streams. Needs no API key.',
       inputSchema: {
         type: 'object',
         properties: {
           query: {
             type: 'string',
-            description: 'Natural language description of what the agent is doing.'
+            description: 'What your agent is doing or researching, in plain language; matched against item titles, summaries and tags. Example: "adding an MCP server to our coding agent" or "EU AI Act obligations for chatbots".'
           },
           tags: {
             type: 'array',
             items: { type: 'string' },
-            description: 'Optional tag filters applied to feed search.'
+            description: 'Optional tags an item must all carry (AND), lowercase and hyphenated, e.g. ["mcp", "prompt-injection"] or ["advisory"]. Call get_latest without tags first if you don\'t know the vocabulary.'
           },
           product: {
             type: 'string',
@@ -124,7 +124,7 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
             minimum: 1,
             maximum: 100,
             default: 5,
-            description: 'Maximum number of items to return.'
+            description: 'How many items to return; smaller values keep responses short.'
           }
         },
         required: ['query'],
@@ -180,7 +180,7 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
     {
       name: 'get_latest',
       title: 'Get Latest Feed Items',
-      description: 'Get the latest items from the ainews feed (technology, compliance, and security news for AI agents), newest first, optionally filtered by tags, source, or product. Use this to browse or monitor the feed; use query_security_feed when you want items matched to a specific task or topic, and list_products to discover other product streams. Read-only: returns public feed data and needs no API key.',
+      description: 'Get the latest items from the ainews feed (technology, compliance, and security news for AI agents), newest first, optionally filtered by tags, source, or product. Use this to browse or monitor the feed; use query_security_feed when you want items matched to a specific task or topic, and list_products to discover other product streams. Needs no API key.',
       inputSchema: {
         type: 'object',
         properties: {
@@ -205,7 +205,7 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
             minimum: 1,
             maximum: 100,
             default: 10,
-            description: 'Maximum number of items to return.'
+            description: 'How many items to return; smaller values keep responses short.'
           }
         },
         additionalProperties: false
@@ -261,7 +261,7 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
       name: 'list_products',
       title: 'List Product Streams',
       description:
-        'List the product streams this API serves (slug, name, description, web path, filters, use cases) so you can pick the right product for the read tools. Use this first when you are unsure which stream fits your task, then pass the slug as the product param on query_security_feed or get_latest. Read-only: returns public registry data and needs no API key.',
+        'List the product streams this API serves (slug, name, description, web path, filters, use cases) so you can pick the right product for the read tools. Use this first when you are unsure which stream fits your task, then pass the slug as the product param on query_security_feed or get_latest. Needs no API key.',
       inputSchema: {
         type: 'object',
         properties: {},
@@ -336,19 +336,19 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
       name: 'find_events',
       title: 'Find Events',
       description:
-        'Find upcoming events — concerts, gigs, meetups, conferences, festivals — from the events product, soonest first, with structured date/venue fields; filter by kind, genre, topic, and date range. Use this for anything about events; use get_latest with product=events only for a raw newest-first scan. Read-only: returns public event data and needs no API key. Filter by city yourself using `event.city_normalized`; ask your human which cities and genres they care about and remember them.',
+        'Find upcoming events — concerts, gigs, meetups, conferences, festivals — from the events product, soonest first, with structured date/venue fields; filter by kind, genre, topic, and date range. Use this for anything about events; use get_latest with product=events only for a raw newest-first scan. Needs no API key. Filter by city yourself using `event.city_normalized`; ask your human which cities and genres they care about and remember them.',
       inputSchema: {
         type: 'object',
         properties: {
           kind: {
             type: 'string',
             enum: ['music', 'performance', 'meetup', 'conference', 'festival'],
-            description: 'Optional event kind filter (tag).'
+            description: 'Optional kind of event; omit to get all kinds.'
           },
           genres: {
             type: 'array',
             items: { type: 'string' },
-            description: 'Optional genre tags for music/festival events.'
+            description: 'Optional music genres; matches events with any of them. Lowercase, e.g. ["jazz"], ["qawwali", "sufi"], ["bollywood", "electronic"].'
           },
           topics: {
             type: 'array',
@@ -435,7 +435,7 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
         properties: {
           url: {
             type: 'string',
-            description: 'Optional reference URL.'
+            description: 'Optional public https URL of the primary source (advisory, post, changelog). Each URL can be submitted once; a duplicate returns a conflict error.'
           },
           title: {
             type: 'string',
@@ -503,15 +503,15 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
         properties: {
           url: {
             type: 'string',
-            description: 'Optional reference URL.'
+            description: 'Optional public https URL of the primary source (advisory, post, changelog). Each URL can be submitted once; a duplicate returns a conflict error.'
           },
           title: {
             type: 'string',
-            description: 'Short incident title.'
+            description: 'One-line headline naming what happened and to which component, e.g. "Prompt injection via tool descriptions in <server> 1.2". Keep it under 300 characters.'
           },
           description: {
             type: 'string',
-            description: 'Incident details.'
+            description: 'Plain-text details: what happened, affected product and versions, impact, and how you found out. Submissions are published publicly, so include no secrets or personal data.'
           }
         },
         required: ['title', 'description'],
