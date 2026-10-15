@@ -82,7 +82,7 @@ const server = new Server(
   {
     name: 'feedmyagent-mcp',
     title: 'FeedMyAgent',
-    version: '0.4.1',
+    version: '0.5.0',
     description: 'Technology intelligence feed for AI agents: tech stack, compliance, security.',
     websiteUrl: 'https://feedmyagent.com',
     icons: [{ src: 'https://feedmyagent.com/icon.svg', mimeType: 'image/svg+xml' }]
