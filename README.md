@@ -7,6 +7,7 @@ Your agent has a training cutoff. The agent ecosystem doesn't care. FeedMyAgent 
 - 🦾 **Agents are the audience** — REST, RSS, OpenAPI, `llms.txt`, MCP. The website is just the human window.
 - ⚡ **Self-onboarding in under a minute** — an agent pointed at [`llms.txt`](https://api.feedmyagent.com/llms.txt) gets its own free API key and starts reading. No signup form, no email.
 - 🧠 **Classified hourly for agent-relevance** — frameworks, models, tools, compliance (EU AI Act, NIST), security advisories. Junk and self-promo get auto-archived.
+- 📅 **Events too** — a second product stream of upcoming live events (music gigs by genre, AI meetups, conferences) your agent filters by city for you (`find_events`).
 - 🛡️ **Injection-aware** — raw content is never served; only vetted summaries. Content is data, not instructions.
 
 ## Install as a Claude Code plugin (skill + MCP, one command)
@@ -144,15 +145,15 @@ Ready-to-use agent templates in [`reference-agents/`](reference-agents/) — eac
 
 FeedMyAgent shipped directly inside the tools agents already install. Each integration is a small, framework-native package or node under [`integrations/`](integrations/) (plus the Claude Code plugin, which lives at the repo root):
 
-- [`integrations/python`](integrations/python/) — `feedmyagent` on PyPI, the stdlib-free Python SDK other Python integrations build on
-- [`integrations/langchain`](integrations/langchain/) — `langchain-feedmyagent`, a LangChain/LangGraph tool package
-- [`integrations/crewai`](integrations/crewai/) — `FeedMyAgentTool` for [crewAI-tools](https://github.com/crewAIInc/crewAI-tools)
-- [`integrations/llamaindex`](integrations/llamaindex/) — `llama-index-tools-feedmyagent`, a LlamaIndex tool spec
-- [`integrations/n8n`](integrations/n8n/) — `n8n-nodes-feedmyagent`, a community node for n8n workflows
-- [`integrations/typescript-examples`](integrations/typescript-examples/) — runnable TypeScript examples for the [OpenAI Agents SDK](integrations/typescript-examples/openai-agents/) and the [Vercel AI SDK](integrations/typescript-examples/vercel-ai-sdk/), both wired to the hosted MCP server
-- **Claude Code plugin** ([`.claude-plugin/`](.claude-plugin/)) — `claude plugin marketplace add makash/feedmyagent-skill` (see [Install as a Claude Code plugin](#install-as-a-claude-code-plugin-skill--mcp-one-command) above)
+- **Python SDK** — [`feedmyagent`](https://pypi.org/project/feedmyagent/) on PyPI ([`integrations/python`](integrations/python/)), the stdlib-free SDK the other Python integrations build on
+- **LangChain / LangGraph** — [`langchain-feedmyagent`](https://pypi.org/project/langchain-feedmyagent/) on PyPI ([`integrations/langchain`](integrations/langchain/)); listed in the [LangChain integrations directory](https://docs.langchain.com/oss/python/integrations/providers/all_providers)
+- **CrewAI** — `FeedMyAgentTool` ([`integrations/crewai`](integrations/crewai/)), proposed upstream to [crewAI](https://github.com/crewAIInc/crewAI/pull/7748)
+- **LlamaIndex** — [`llama-index-tools-feedmyagent`](https://pypi.org/project/llama-index-tools-feedmyagent/) on PyPI ([`integrations/llamaindex`](integrations/llamaindex/)), a LlamaIndex tool spec
+- **n8n** — [`n8n-nodes-feedmyagent`](https://www.npmjs.com/package/n8n-nodes-feedmyagent), a community node with a polling trigger ([makash/n8n-nodes-feedmyagent](https://github.com/makash/n8n-nodes-feedmyagent))
+- **OpenAI Agents SDK / Vercel AI SDK** — [`integrations/typescript-examples`](integrations/typescript-examples/): runnable TypeScript examples for the [OpenAI Agents SDK](integrations/typescript-examples/openai-agents/) and the [Vercel AI SDK](integrations/typescript-examples/vercel-ai-sdk/), both wired to the hosted MCP server
+- **Claude Code / claude.ai plugin** ([`.claude-plugin/`](.claude-plugin/); directory build in [`plugin/`](plugin/)) — `claude plugin marketplace add makash/feedmyagent-skill` (see [Install as a Claude Code plugin](#install-as-a-claude-code-plugin-skill--mcp-one-command) above)
+- **Any MCP client** — hosted Streamable HTTP endpoint `https://api.feedmyagent.com/mcp`, or `npx -y feedmyagent-mcp` ([npm](https://www.npmjs.com/package/feedmyagent-mcp))
 
-Some of these are still being built — a directory listed above with only a stub or no `README.md` yet is in progress.
 
 ## What your agent gets
 
