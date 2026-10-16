@@ -82,7 +82,7 @@ const server = new Server(
   {
     name: 'feedmyagent-mcp',
     title: 'FeedMyAgent',
-    version: '1.0.0',
+    version: '1.1.0',
     description: 'Technology intelligence feed for AI agents: tech stack, compliance, security.',
     websiteUrl: 'https://feedmyagent.com',
     icons: [{ src: 'https://feedmyagent.com/icon.svg', mimeType: 'image/svg+xml' }]
@@ -554,6 +554,77 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
         openWorldHint: true,
         idempotentHint: false
       }
+    },
+    {
+      name: 'request_coverage',
+      title: 'Request Coverage',
+      description:
+        'Ask FeedMyAgent to start covering a source (a feed, site, changelog or event calendar your agent relies on) or a topic it does not cover yet. Use this when query_security_feed, get_latest or find_events return nothing useful for a subject you need, or when you know a primary source the feed should ingest; use report_incident or report_event to submit a single item instead. Behaviour: queues the request for the maintainer to review; a repeat request for the same source or topic adds a vote instead of a duplicate, and nothing is ingested until the request is accepted. Requires a free API key: get one via POST /keys with {"owner": "<your-agent-name>"} and send it as Authorization: Bearer <key>.',
+      inputSchema: {
+        type: 'object',
+        properties: {
+          kind: {
+            type: 'string',
+            enum: ['source', 'topic'],
+            description: '"source" for a specific feed, site or calendar URL to ingest; "topic" for a subject area to cover.'
+          },
+          title: {
+            type: 'string',
+            description: 'Short name of the source or topic, 3-200 characters, e.g. "RustSec advisories" or "agent payments (x402)".'
+          },
+          url: {
+            type: 'string',
+            description: 'Required when kind is "source": the feed or page URL (RSS/Atom, changelog, iCal). Optional for topics, as an example source.'
+          },
+          reason: {
+            type: 'string',
+            description: 'Optional: why your agent needs this, in one or two sentences (max 1000 characters). Helps prioritise.'
+          },
+          product: {
+            type: 'string',
+            enum: ['ainews', 'events'],
+            default: 'ainews',
+            description: 'Product stream the coverage is for (default ainews; use events for event calendars and venues).'
+          }
+        },
+        required: ['kind', 'title'],
+        additionalProperties: false
+      },
+      outputSchema: {
+        type: 'object',
+        properties: {
+          data: {
+            type: 'object',
+            description: 'The queued coverage request.',
+            properties: {
+              id: { type: 'string', description: 'Coverage request id.' },
+              status: { type: 'string', description: 'Review status: pending, accepted or rejected.' },
+              votes: { type: 'integer', description: 'How many requests asked for this source or topic.' },
+              duplicate: { type: 'boolean', description: 'True when an open request already existed and this call added a vote.' }
+            },
+            required: ['id', 'status', 'votes', 'duplicate'],
+            additionalProperties: false
+          },
+          source: {
+          type: 'object',
+          description: 'Provenance of the payload.',
+          properties: {
+            name: { type: 'string', description: 'Feed name.' },
+            url: { type: 'string', description: 'Feed homepage URL.' }
+          },
+          required: ['name', 'url'],
+          additionalProperties: false
+        }
+        },
+        required: ['data', 'source'],
+        additionalProperties: false
+      },
+      annotations: {
+        readOnlyHint: false,
+        destructiveHint: false,
+        openWorldHint: true,
+        idempotentHint: false
+      }
     }
   ]
 }))
@@ -605,6 +676,17 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         title: args.title,
         description: args.description,
         event: args.event
+      })
+      return responsePayload(data)
+    }
+
+    if (name === 'request_coverage') {
+      const data = await client.requestCoverage({
+        kind: args.kind,
+        title: args.title,
+        url: args.url,
+        reason: args.reason,
+        product: args.product
       })
       return responsePayload(data)
     }

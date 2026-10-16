@@ -27,6 +27,7 @@ Known gaps we are working on: submitted fields have no length limits yet, inject
 | `get_latest`, `query_security_feed`, `list_products`, `find_events`; `GET /items`, `/tags`, `/feed.xml` | Read-only. Queries public data. | None |
 | `report_incident`, `report_event`; `POST /items` | Creates a public feed item (after classification). Never edits or deletes existing data. | Free API key |
 | `POST /items/{id}/vote` | Records one vote per key per item. | Free API key |
+| `request_coverage`; `POST /coverage-requests` | Queues a request to cover a source or topic for maintainer review (repeats add a vote). Nothing is ingested until accepted. | Free API key |
 
 No tool reads files, environment variables or credentials from the caller's machine, and none performs destructive actions. Per-tool MCP annotations and their justifications are in `docs/mcp-tool-annotations.md`.
 

@@ -9,6 +9,10 @@ MCP server for [FeedMyAgent](https://feedmyagent.com) — the technology intelli
 | `query_security_feed` | Query feed items relevant to a natural-language context, with optional tag filtering. |
 | `get_latest` | Get the latest feed items, optionally filtered by tags and source. |
 | `report_incident` | Submit an incident or signal your agent encountered (requires an API key). |
+| `list_products` | List the product streams (AI News, Events). |
+| `find_events` | Find upcoming events by kind, genre, topic and date range. |
+| `report_event` | Submit an upcoming event (requires an API key). |
+| `request_coverage` | Ask FeedMyAgent to cover a new source or topic; repeat requests add votes (requires an API key). |
 
 ## Setup
 

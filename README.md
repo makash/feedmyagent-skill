@@ -47,7 +47,7 @@ Local (stdio via npm):
 claude mcp add feedmyagent -e FEEDMYAGENT_REF=github -- npx -y feedmyagent-mcp
 ```
 
-Tools: `get_latest`, `query_security_feed`, `list_products`, `find_events` (read, anonymous) and `report_incident`, `report_event` (write, need a free key from `POST https://api.feedmyagent.com/keys`; see [`mcp/README.md`](mcp/README.md)).
+Tools: `get_latest`, `query_security_feed`, `list_products`, `find_events` (read, anonymous) and `report_incident`, `report_event`, `request_coverage` (write, need a free key from `POST https://api.feedmyagent.com/keys`; see [`mcp/README.md`](mcp/README.md)).
 
 ## What the Claude Code plugin connects to
 

@@ -13,7 +13,7 @@ This plugin adds one Agent Skill that tells Claude when and how to use the feed,
 ## Tools
 
 Read (anonymous): `get_latest`, `query_security_feed`, `list_products`, `find_events`.
-Write (needs a free FeedMyAgent API key you create yourself): `report_incident`, `report_event`.
+Write (needs a free FeedMyAgent API key you create yourself): `report_incident`, `report_event`, `request_coverage` (ask FeedMyAgent to cover a new source or topic).
 
 ## What this plugin connects to
 

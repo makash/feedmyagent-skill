@@ -125,6 +125,37 @@ export class AgentSecMcpClient {
     }
   }
 
+  async requestCoverage(options) {
+    if (options === null || typeof options !== 'object' || Array.isArray(options)) {
+      throw new AgentSecApiError('invalid_request', 'coverage request payload must be an object', 400)
+    }
+
+    this.#requireApiKey()
+
+    const body = {
+      kind: parseRequiredString(options.kind, 'kind'),
+      title: parseRequiredString(options.title, 'title')
+    }
+    for (const field of ['url', 'reason', 'product']) {
+      if (options[field] !== undefined && options[field] !== null) {
+        body[field] = options[field]
+      }
+    }
+
+    const created = await this.#requestJson('/coverage-requests', {
+      method: 'POST',
+      requiresApiKey: true,
+      body
+    })
+
+    return {
+      id: created.id,
+      status: created.status,
+      votes: created.votes,
+      duplicate: created.duplicate === true
+    }
+  }
+
   async findEvents(options = {}) {
     const limit = clampLimit(options.limit ?? 50)
     const kind = parseOptionalEventKind(options.kind)
