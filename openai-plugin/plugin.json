@@ -1,0 +1,53 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "feedmyagent",
+  "version": "1.1.0",
+  "description": "Agent-readable feed of AI and agent tech news, security advisories, compliance deadlines and upcoming live events.",
+  "author": {
+    "name": "KLOUDLE Inc.",
+    "email": "akash@kloudle.com",
+    "url": "https://feedmyagent.com"
+  },
+  "homepage": "https://feedmyagent.com",
+  "repository": "https://github.com/makash/feedmyagent-skill",
+  "license": "MIT",
+  "keywords": [
+    "ai-news",
+    "security-advisories",
+    "compliance",
+    "events",
+    "agents"
+  ],
+  "extensions": {
+    "com.openai": {
+      "auth": {
+        "type": "none"
+      },
+      "interface": {
+        "displayName": "FeedMyAgent",
+        "shortDescription": "What's new in AI agents, security and compliance, plus live events near you.",
+        "longDescription": "FeedMyAgent keeps ChatGPT current on fast-moving topics it was not trained on. Ask what's new in AI frameworks and models, which security advisories affect your agent stack (MCP, prompt injection, supply chain), and which compliance deadlines (EU AI Act, NIST) are coming up. Items are classified hourly for relevance to people building and running AI agents, each with a short summary and a link to the original source. FeedMyAgent also lists upcoming live events, from AI meetups to concerts by genre, which ChatGPT can filter to your city. Reading needs no account. You can also suggest items or new sources to cover at feedmyagent.com.",
+        "developerName": "KLOUDLE Inc.",
+        "category": "Research",
+        "capabilities": [
+          "Read"
+        ],
+        "websiteURL": "https://feedmyagent.com",
+        "privacyPolicyURL": "https://feedmyagent.com/privacy",
+        "termsOfServiceURL": "https://feedmyagent.com/terms",
+        "defaultPrompt": [
+          "What's new in MCP security this week?",
+          "Which AI compliance deadlines are coming up?",
+          "Summarise this week's most important AI agent framework releases."
+        ],
+        "brandColor": "#22D3EE",
+        "composerIcon": "./assets/icon.png",
+        "logo": "./assets/logo.png",
+        "screenshots": [
+          "./assets/screenshot-1.png",
+          "./assets/screenshot-2.png"
+        ]
+      }
+    }
+  }
+}
