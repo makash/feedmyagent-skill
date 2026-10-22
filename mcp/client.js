@@ -44,6 +44,10 @@ export class AgentSecMcpClient {
     for (const tag of tags) {
       searchParams.append('tags', tag)
     }
+    const section = parseOptionalSection(options.section)
+    if (section !== null) {
+      searchParams.set('section', section)
+    }
 
     const items = await this.#requestItems(searchParams, false)
     return items.slice(0, limit).map((item) => toToolItem(item))
@@ -69,6 +73,10 @@ export class AgentSecMcpClient {
     }
     for (const tag of tags) {
       searchParams.append('tags', tag)
+    }
+    const section = parseOptionalSection(options.section)
+    if (section !== null) {
+      searchParams.set('section', section)
     }
 
     const items = await this.#requestItems(searchParams, false)
@@ -356,6 +364,16 @@ function parseOptionalSource(source) {
   }
 
   return source
+}
+
+function parseOptionalSection(value) {
+  if (value === undefined || value === null) {
+    return null
+  }
+  if (typeof value !== 'string' || !['news', 'research', 'all'].includes(value)) {
+    throw new AgentSecApiError('invalid_request', 'section must be one of: news, research, all', 400)
+  }
+  return value
 }
 
 function parseOptionalProduct(product) {

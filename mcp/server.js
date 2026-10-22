@@ -82,7 +82,7 @@ const server = new Server(
   {
     name: 'feedmyagent-mcp',
     title: 'FeedMyAgent',
-    version: '1.1.0',
+    version: '1.2.0',
     description: 'Technology intelligence feed for AI agents: tech stack, compliance, security.',
     websiteUrl: 'https://feedmyagent.com',
     icons: [{ src: 'https://feedmyagent.com/icon.svg', mimeType: 'image/svg+xml' }]
@@ -118,6 +118,12 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
             enum: ['ainews', 'events'],
             default: 'ainews',
             description: 'Optional product stream to read (default ainews).'
+          },
+          section: {
+            type: 'string',
+            enum: ['news', 'research', 'all'],
+            default: 'news',
+            description: 'Optional: "news" (default) leaves out research papers; "research" returns only papers (arXiv and similar); "all" mixes both.'
           },
           limit: {
             type: 'integer',
@@ -199,6 +205,12 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
             enum: ['ainews', 'events'],
             default: 'ainews',
             description: 'Optional product stream to read (default ainews).'
+          },
+          section: {
+            type: 'string',
+            enum: ['news', 'research', 'all'],
+            default: 'news',
+            description: 'Optional: "news" (default) leaves out research papers; "research" returns only papers (arXiv and similar); "all" mixes both.'
           },
           limit: {
             type: 'integer',
@@ -639,6 +651,8 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
       const data = await client.querySecurityFeed({
         query: args.query,
         tags: args.tags,
+        product: args.product,
+        section: args.section,
         limit: args.limit
       })
       return responsePayload(data)
@@ -648,6 +662,8 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
       const data = await client.getLatest({
         tags: args.tags,
         source: args.source,
+        product: args.product,
+        section: args.section,
         limit: args.limit
       })
       return responsePayload(data)
